@@ -1,29 +1,28 @@
-const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+import path from 'path';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
-const CLIENT_DIR = path.resolve(__dirname, 'client');
-const SERVER_DIR = path.resolve(__dirname, 'server/generated');
-const DIST_DIR = path.resolve(__dirname, 'dist');
+export const CLIENT_DIR = path.resolve(__dirname, 'client');
+export const SERVER_DIR = path.resolve(__dirname, 'server/generated');
+export const DIST_DIR = path.resolve(__dirname, 'dist');
 
-const loaders = [{
+export const babelLoader = {
     test: /\.js$/,
     include: CLIENT_DIR,
     loader: 'babel-loader',
-    query: {
-        presets: ['react', 'es2015']
-    }
-}, {
+};
+
+export const cssLoader = {
     test: /\.less$/,
     loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
-}];
+};
 
-const aliases = {
+export const aliases = {
     components: path.resolve(CLIENT_DIR, 'components'),
     reducers: path.resolve(CLIENT_DIR, 'reducers'),
     actions: path.resolve(CLIENT_DIR, 'actions')
 };
 
-module.exports = [{
+export const client = {
     name: 'client',
     target: 'web',
     context: CLIENT_DIR,
@@ -33,7 +32,7 @@ module.exports = [{
         filename: 'bundle.js'
     },
     module: {
-        loaders: loaders
+        loaders: [babelLoader, cssLoader]
     },
     resolve: {
         alias: aliases
@@ -43,7 +42,9 @@ module.exports = [{
             allChunks: true
         })
     ]
-}, {
+};
+
+export const server = {
     name: 'server',
     target: 'node',
     context: CLIENT_DIR,
@@ -57,7 +58,7 @@ module.exports = [{
     },
     externals: /^[a-z\-0-9]+$/,
     module: {
-        loaders: loaders
+        loaders: [babelLoader, cssLoader]
     },
     resolve: {
         alias: aliases
@@ -65,4 +66,6 @@ module.exports = [{
     plugins: [
         new ExtractTextPlugin('[name].css')
     ]
-}];
+};
+
+export default [client, server];
