@@ -10,12 +10,18 @@ const loaders = [{
     include: CLIENT_DIR,
     loader: 'babel-loader',
     query: {
-        presets: ['es2015', 'react']
+        presets: ['react', 'es2015']
     }
 }, {
     test: /\.less$/,
     loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
 }];
+
+const aliases = {
+    components: path.resolve(CLIENT_DIR, 'components'),
+    reducers: path.resolve(CLIENT_DIR, 'reducers'),
+    actions: path.resolve(CLIENT_DIR, 'actions')
+};
 
 module.exports = [{
     name: 'client',
@@ -30,9 +36,7 @@ module.exports = [{
         loaders: loaders
     },
     resolve: {
-        alias: {
-            components: path.resolve(CLIENT_DIR, 'components')
-        }
+        alias: aliases
     },
     plugins: [
         new ExtractTextPlugin('bundle.css', {
@@ -56,9 +60,7 @@ module.exports = [{
         loaders: loaders
     },
     resolve: {
-        alias: {
-            components: path.resolve(CLIENT_DIR, 'components')
-        }
+        alias: aliases
     },
     plugins: [
         new ExtractTextPlugin('[name].css')
